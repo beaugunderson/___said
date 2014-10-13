@@ -1,0 +1,22 @@
+{
+  "name": "___said",
+  "version": "1.0.0",
+  "description": "A Twitter bot that juxtaposes quotes from women and men in the news.",
+  "main": "___said.js",
+  "scripts": {
+    "test": "mocha -R spec"
+  },
+  "author": "Beau Gunderson <beau@beaugunderson.com>",
+  "license": "BSD",
+  "dependencies": {
+    "async": "^0.9.0",
+    "commander": "^2.3.0",
+    "debug": "^2.0.0",
+    "lodash": "^2.4.1",
+    "news-text": "git+https://github.com/beaugunderson/node-news-text.git",
+    "parse-english": "^0.2.0-rc.2",
+    "retext": "^0.2.0-rc.4",
+    "retext-inspect": "^0.1.0",
+    "retext-visit": "^0.1.1"
+  }
+}
