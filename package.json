@@ -20,5 +20,9 @@
     "retext-inspect": "^0.1.0",
     "retext-visit": "^0.1.1",
     "twit": "^1.1.18"
+  },
+  "devDependencies": {
+    "chai": "^1.9.2",
+    "mocha": "^2.0.1"
   }
 }
