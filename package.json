@@ -15,7 +15,7 @@
     "debug": "^2.0.0",
     "level-cache-tools": "^2.0.0",
     "lodash": "^2.4.1",
-    "news-text": "git+https://github.com/beaugunderson/node-news-text.git",
+    "news-text": "^1.1.0",
     "parse-english": "^0.2.0-rc.2",
     "retext": "^0.2.0-rc.4",
     "retext-inspect": "^0.1.0",
