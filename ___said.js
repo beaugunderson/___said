@@ -4,7 +4,10 @@ var botUtilities = require('bot-utilities');
 var candidates = require('./lib/candidates.js');
 var program = require('commander');
 var Twit = require('twit');
+var ValueCache = require('level-cache-tools').ValueCache;
 var _ = require('lodash');
+
+var usedQuotes = new ValueCache('used-quotes');
 
 _.mixin(botUtilities.lodashMixins);
 
@@ -28,13 +31,19 @@ program
 
       var T = new Twit(botUtilities.getTwitterAuthFromEnv());
 
-      T.post('statuses/update', {status: _.sample(results)},
-          function (err, data, response) {
-        if (err || response.statusCode !== 200) {
-          console.log('Error sending tweet', err, response.statusCode);
+      var chosen = _.sample(results);
 
-          return;
+      usedQuotes.putMulti(chosen.quotes, function (err) {
+        if (err) {
+          return console.log('Error storing quotes', err);
         }
+
+        T.post('statuses/update', {status: chosen.tweet},
+            function (err, data, response) {
+          if (err || response.statusCode !== 200) {
+            return console.log('Error sending tweet', err, response.statusCode);
+          }
+        });
       });
     });
   });
