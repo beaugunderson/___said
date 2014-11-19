@@ -2,12 +2,11 @@
 
 var botUtilities = require('bot-utilities');
 var candidates = require('./lib/candidates.js');
+var lockFile = require('lockfile');
 var program = require('commander');
 var Twit = require('twit');
 var ValueCache = require('level-cache-tools').ValueCache;
 var _ = require('lodash');
-
-var usedQuotes = new ValueCache('used-quotes');
 
 _.mixin(botUtilities.lodashMixins);
 
@@ -24,25 +23,41 @@ program
       }
     }
 
-    candidates(function (err, results) {
+    lockFile.lock('___said.lock', function (err) {
       if (err) {
-        throw err;
+        console.error('Error: ___said is locked');
+
+        process.exit(1);
       }
 
-      var T = new Twit(botUtilities.getTwitterAuthFromEnv());
+      var usedQuotes = new ValueCache('used-quotes');
 
-      var chosen = _.sample(results);
-
-      usedQuotes.putMulti(chosen.quotes, function (err) {
+      candidates(usedQuotes, function (err, results) {
         if (err) {
-          return console.log('Error storing quotes', err);
+          throw err;
         }
 
-        T.post('statuses/update', {status: chosen.tweet},
-            function (err, data, response) {
-          if (err || response.statusCode !== 200) {
-            return console.log('Error sending tweet', err, response.statusCode);
+        var T = new Twit(botUtilities.getTwitterAuthFromEnv());
+
+        var chosen = _.sample(results);
+
+        usedQuotes.putMulti(chosen.quotes, function (err) {
+          if (err) {
+            return console.log('Error storing quotes', err);
           }
+
+          usedQuotes.close(function (err) {
+            if (err) {
+              return console.log('Error closing used-quotes', err);
+            }
+
+            T.post('statuses/update', {status: chosen.tweet},
+                function (err, data, response) {
+              if (err || response.statusCode !== 200) {
+                return console.log('Error sending tweet', err, response.statusCode);
+              }
+            });
+          });
         });
       });
     });
