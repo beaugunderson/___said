@@ -17,9 +17,11 @@
     "lodash": "^2.4.1",
     "news-text": "^1.1.0",
     "parse-english": "^0.2.0-rc.2",
+    "quote-tools": "^2.0.1",
     "retext": "^0.2.0-rc.4",
     "retext-inspect": "^0.1.0",
     "retext-visit": "^0.1.1",
+    "sentence-tools": "^2.0.0",
     "twit": "^1.1.18"
   },
   "devDependencies": {
