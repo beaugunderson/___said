@@ -10,23 +10,27 @@
   "license": "BSD",
   "dependencies": {
     "async": "^0.9.0",
-    "bot-utilities": "^1.0.0",
-    "commander": "^2.3.0",
-    "debug": "^2.0.0",
-    "level-cache-tools": "^2.0.0",
+    "bot-utilities": "^1.0.3",
+    "commander": "^2.5.0",
+    "debug": "^2.1.0",
+    "level-cache-tools": "^2.2.0",
     "lockfile": "^1.0.0",
     "lodash": "^2.4.1",
-    "news-text": "^1.1.0",
-    "parse-english": "^0.2.0-rc.2",
-    "quote-tools": "^2.0.1",
-    "retext": "^0.2.0-rc.4",
-    "retext-inspect": "^0.1.0",
-    "retext-visit": "^0.1.1",
+    "news-text": "^2.0.0",
+    "quote-tools": "^2.1.0",
     "sentence-tools": "^2.0.0",
     "twit": "^1.1.18"
   },
   "devDependencies": {
-    "chai": "^1.9.2",
+    "chai": "^1.10.0",
     "mocha": "^2.0.1"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/beaugunderson/node-twitter-___said.git"
+  },
+  "bugs": {
+    "url": "https://github.com/beaugunderson/node-twitter-___said/issues"
+  },
+  "homepage": "https://github.com/beaugunderson/node-twitter-___said"
 }
