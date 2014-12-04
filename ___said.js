@@ -2,6 +2,8 @@
 
 var botUtilities = require('bot-utilities');
 var candidates = require('./lib/candidates.js');
+var domain = require('domain');
+var exit = require('exit');
 var lockFile = require('lockfile');
 var program = require('commander');
 var Twit = require('twit');
@@ -19,7 +21,7 @@ program
       if (_.percentChance(98)) {
         console.log('Skipping...');
 
-        process.exit(0);
+        exit(0);
       }
     }
 
@@ -27,35 +29,67 @@ program
       if (err) {
         console.error('Error: ___said is locked');
 
-        process.exit(1);
+        exit(1);
       }
 
       var usedQuotes = new ValueCache('used-quotes');
 
-      candidates(usedQuotes, function (err, results) {
+      var d = domain.create();
+
+      function errorCleanUp(err) {
         if (err) {
-          throw err;
+          console.log('Error:', err);
         }
 
-        var T = new Twit(botUtilities.getTwitterAuthFromEnv());
-
-        var chosen = _.sample(results);
-
-        usedQuotes.putMulti(chosen.quotes, function (err) {
+        usedQuotes.close(function (err) {
           if (err) {
-            return console.log('Error storing quotes', err);
+            console.log('Error closing usedQuotes', err);
           }
 
-          usedQuotes.close(function (err) {
+          exit(1);
+        });
+      }
+
+      d.on('error', errorCleanUp);
+
+      process.on('SIGTERM', function () {
+        console.log('Terminating...');
+
+        errorCleanUp();
+      });
+
+      process.on('SIGINT', function () {
+        console.log('Aborting...');
+
+        errorCleanUp();
+      });
+
+      d.run(function () {
+        candidates(usedQuotes, function (err, results) {
+          if (err) {
+            throw err;
+          }
+
+          var T = new Twit(botUtilities.getTwitterAuthFromEnv());
+
+          var chosen = _.sample(results);
+
+          usedQuotes.putMulti(chosen.quotes, function (err) {
             if (err) {
-              return console.log('Error closing used-quotes', err);
+              return console.log('Error storing quotes', err);
             }
 
-            T.post('statuses/update', {status: chosen.tweet},
-                function (err, data, response) {
-              if (err || response.statusCode !== 200) {
-                return console.log('Error sending tweet', err, response.statusCode);
+            usedQuotes.close(function (err) {
+              if (err) {
+                return console.log('Error closing used-quotes', err);
               }
+
+              T.post('statuses/update', {status: chosen.tweet},
+                  function (err, data, response) {
+                if (err || response.statusCode !== 200) {
+                  return console.log('Error sending tweet', err, response.statusCode);
+                }
+              });
             });
           });
         });
