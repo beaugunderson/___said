@@ -10,7 +10,7 @@
   "license": "BSD",
   "dependencies": {
     "async": "^0.9.0",
-    "bot-utilities": "^1.0.3",
+    "bot-utilities": "^2.1.0",
     "commander": "^2.5.0",
     "debug": "^2.1.0",
     "exit": "^0.1.2",
@@ -18,8 +18,8 @@
     "lockfile": "^1.0.0",
     "lodash": "^2.4.1",
     "news-text": "^2.0.0",
-    "quote-tools": "^2.1.0",
-    "sentence-tools": "^2.0.0",
+    "quote-tools": "^3.0.0",
+    "sentence-tools": "^3.2.0",
     "twit": "^1.1.18"
   },
   "devDependencies": {

@@ -16,15 +16,7 @@ program
   .command('tweet')
   .description('Generate and tweet an image')
   .option('-r, --random', 'only post a percentage of the time')
-  .action(function (options) {
-    if (options.random) {
-      if (_.percentChance(98)) {
-        console.log('Skipping...');
-
-        exit(0);
-      }
-    }
-
+  .action(botUtilities.randomCommand(function () {
     lockFile.lock('___said.lock', function (err) {
       if (err) {
         console.error('Error: ___said is locked');
@@ -41,12 +33,18 @@ program
           console.log('Error:', err);
         }
 
-        usedQuotes.close(function (err) {
+        lockFile.unlock('___said.lock', function (err) {
           if (err) {
-            console.log('Error closing usedQuotes', err);
+            console.log('Error unlocking ___said.lock:', err);
           }
 
-          exit(1);
+          usedQuotes.close(function (err) {
+            if (err) {
+              console.log('Error closing usedQuotes', err);
+            }
+
+            exit(1);
+          });
         });
       }
 
@@ -87,7 +85,8 @@ program
               T.post('statuses/update', {status: chosen.tweet},
                   function (err, data, response) {
                 if (err || response.statusCode !== 200) {
-                  return console.log('Error sending tweet', err, response.statusCode);
+                  return console.log('Error sending tweet', err,
+                                     response.statusCode);
                 }
               });
             });
@@ -95,7 +94,7 @@ program
         });
       });
     });
-  });
+  }));
 
 program
   .command('candidates')
